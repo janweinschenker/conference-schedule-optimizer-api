@@ -187,6 +187,19 @@ paths:
           description: The talk preset was deleted
         '404':
           description: No talk preset with the given id
+  /v1/planningsolution:
+    post:
+      tags:
+        - planningsolution
+      summary: Trigger a new planning solution calculation
+      description: >-
+        Starts an asynchronous planning solution calculation and returns
+        immediately. The calculation runs in the background and its result can
+        be retrieved later via GET /v1/planningsolution/latest.
+      operationId: startPlanningSolution
+      responses:
+        '202':
+          description: The planning solution calculation has been accepted and started
   /v1/planningsolution/latest:
     get:
       tags:
