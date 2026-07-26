@@ -337,6 +337,9 @@ components:
           type: boolean
         flipchartRequired:
           type: boolean
+        favorites:
+          type: integer
+          format: int32
     ScoreViewModel:
       type: object
       required:
