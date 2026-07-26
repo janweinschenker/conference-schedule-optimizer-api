@@ -1,0 +1,436 @@
+openapi: 3.0.3
+info:
+  title: Conference Schedule Optimizer API
+  description: API for optimizing conference talk schedules.
+  version: 0.0.1
+tags:
+  - name: planningsolution
+    description: Conference planning solution operations
+  - name: preset
+    description: User-maintained talk and timeslot presets used to seed a planning run
+paths:
+  /v1/preset/timeslot:
+    get:
+      tags:
+        - preset
+      summary: List all timeslot presets
+      operationId: getTimeslotPresets
+      responses:
+        '200':
+          description: All timeslot presets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeslotPresetViewModel'
+    post:
+      tags:
+        - preset
+      summary: Create a new timeslot preset
+      operationId: createTimeslotPreset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeslotPresetRequest'
+      responses:
+        '201':
+          description: The created timeslot preset
+          headers:
+            Location:
+              description: URI of the created timeslot preset
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeslotPresetViewModel'
+  /v1/preset/timeslot/{id}:
+    get:
+      tags:
+        - preset
+      summary: Get a single timeslot preset by id
+      operationId: getTimeslotPreset
+      parameters:
+        - $ref: '#/components/parameters/PresetId'
+      responses:
+        '200':
+          description: The timeslot preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeslotPresetViewModel'
+        '404':
+          description: No timeslot preset with the given id
+    put:
+      tags:
+        - preset
+      summary: Update an existing timeslot preset
+      operationId: updateTimeslotPreset
+      parameters:
+        - $ref: '#/components/parameters/PresetId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeslotPresetRequest'
+      responses:
+        '200':
+          description: The updated timeslot preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeslotPresetViewModel'
+        '404':
+          description: No timeslot preset with the given id
+    delete:
+      tags:
+        - preset
+      summary: Delete a timeslot preset
+      operationId: deleteTimeslotPreset
+      parameters:
+        - $ref: '#/components/parameters/PresetId'
+      responses:
+        '204':
+          description: The timeslot preset was deleted
+        '404':
+          description: No timeslot preset with the given id
+  /v1/preset/talk:
+    get:
+      tags:
+        - preset
+      summary: List all talk presets
+      operationId: getTalkPresets
+      responses:
+        '200':
+          description: All talk presets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TalkPresetViewModel'
+    post:
+      tags:
+        - preset
+      summary: Create a new talk preset
+      operationId: createTalkPreset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TalkPresetRequest'
+      responses:
+        '201':
+          description: The created talk preset
+          headers:
+            Location:
+              description: URI of the created talk preset
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkPresetViewModel'
+  /v1/preset/talk/{id}:
+    get:
+      tags:
+        - preset
+      summary: Get a single talk preset by id
+      operationId: getTalkPreset
+      parameters:
+        - $ref: '#/components/parameters/PresetId'
+      responses:
+        '200':
+          description: The talk preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkPresetViewModel'
+        '404':
+          description: No talk preset with the given id
+    put:
+      tags:
+        - preset
+      summary: Update an existing talk preset
+      operationId: updateTalkPreset
+      parameters:
+        - $ref: '#/components/parameters/PresetId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TalkPresetRequest'
+      responses:
+        '200':
+          description: The updated talk preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkPresetViewModel'
+        '404':
+          description: No talk preset with the given id
+    delete:
+      tags:
+        - preset
+      summary: Delete a talk preset
+      operationId: deleteTalkPreset
+      parameters:
+        - $ref: '#/components/parameters/PresetId'
+      responses:
+        '204':
+          description: The talk preset was deleted
+        '404':
+          description: No talk preset with the given id
+  /v1/planningsolution/latest:
+    get:
+      tags:
+        - planningsolution
+      summary: Get the most recent planning solution
+      description: Returns the newest planning solution including all talks and timeslots.
+      operationId: getLatestPlanningSolution
+      responses:
+        '200':
+          description: The most recent planning solution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanningSolutionViewModel'
+        '404':
+          description: No planning solution has been created yet
+components:
+  parameters:
+    PresetId:
+      name: id
+      in: path
+      required: true
+      description: Database id of the preset record
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    TimeslotPresetViewModel:
+      type: object
+      required:
+        - id
+        - room
+        - seats
+      properties:
+        id:
+          type: integer
+          format: int64
+        room:
+          type: string
+        start:
+          type: string
+          description: Start time of the timeslot (HH:mm)
+        end:
+          type: string
+          description: End time of the timeslot (HH:mm)
+        seats:
+          type: integer
+          format: int32
+        beamerAvailable:
+          type: boolean
+        flipchartAvailable:
+          type: boolean
+        created:
+          type: string
+          description: Creation timestamp (ISO-8601), read-only
+        updated:
+          type: string
+          description: Last modification timestamp (ISO-8601), read-only
+        createdBy:
+          type: string
+          description: User who created the preset, read-only
+        updatedBy:
+          type: string
+          description: User who last modified the preset, read-only
+    TimeslotPresetRequest:
+      type: object
+      required:
+        - room
+        - seats
+      properties:
+        room:
+          type: string
+          minLength: 1
+        start:
+          type: string
+          description: Start time of the timeslot (HH:mm)
+        end:
+          type: string
+          description: End time of the timeslot (HH:mm)
+        seats:
+          type: integer
+          format: int32
+          minimum: 0
+        beamerAvailable:
+          type: boolean
+        flipchartAvailable:
+          type: boolean
+    TalkPresetViewModel:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        speaker:
+          type: string
+        durationMinutes:
+          type: integer
+          format: int64
+        beamerRequired:
+          type: boolean
+        flipchartRequired:
+          type: boolean
+        created:
+          type: string
+          description: Creation timestamp (ISO-8601), read-only
+        updated:
+          type: string
+          description: Last modification timestamp (ISO-8601), read-only
+        createdBy:
+          type: string
+          description: User who created the preset, read-only
+        updatedBy:
+          type: string
+          description: User who last modified the preset, read-only
+    TalkPresetRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+        speaker:
+          type: string
+        durationMinutes:
+          type: integer
+          format: int64
+          minimum: 0
+        beamerRequired:
+          type: boolean
+        flipchartRequired:
+          type: boolean
+    ScoreViewModel:
+      type: object
+      required:
+        - hardScore
+        - softScore
+        - feasible
+      properties:
+        hardScore:
+          type: integer
+          format: int32
+        softScore:
+          type: integer
+          format: int32
+        feasible:
+          type: boolean
+    ConstraintMatchViewModel:
+      type: object
+      required:
+        - constraintName
+        - hardScore
+        - softScore
+      properties:
+        constraintName:
+          type: string
+        hardScore:
+          type: integer
+          format: int32
+        softScore:
+          type: integer
+          format: int32
+    TimeslotViewModel:
+      type: object
+      required:
+        - id
+        - room
+        - seats
+      properties:
+        id:
+          type: integer
+          format: int64
+        room:
+          type: string
+        start:
+          type: string
+          description: Start time of the timeslot (HH:mm)
+        end:
+          type: string
+          description: End time of the timeslot (HH:mm)
+        seats:
+          type: integer
+          format: int32
+        beamerAvailable:
+          type: boolean
+        flipchartAvailable:
+          type: boolean
+    TalkViewModel:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        speaker:
+          type: string
+        durationMinutes:
+          type: integer
+          format: int64
+        beamerRequired:
+          type: boolean
+        flipchartRequired:
+          type: boolean
+        favorites:
+          type: integer
+          format: int32
+        timeslot:
+          $ref: '#/components/schemas/TimeslotViewModel'
+        score:
+          $ref: '#/components/schemas/ScoreViewModel'
+        constraintMatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstraintMatchViewModel'
+    PlanningSolutionViewModel:
+      type: object
+      required:
+        - id
+        - talks
+        - timeslots
+      properties:
+        id:
+          type: integer
+          format: int64
+        score:
+          $ref: '#/components/schemas/ScoreViewModel'
+        constraintMatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstraintMatchViewModel'
+        talks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TalkViewModel'
+        timeslots:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeslotViewModel'
