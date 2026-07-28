@@ -8,6 +8,8 @@ tags:
     description: Conference planning solution operations
   - name: preset
     description: User-maintained talk and timeslot presets used to seed a planning run
+  - name: explain
+    description: Natural-language, multi-turn explanations of a planning solution
 paths:
   /v1/preset/timeslot:
     get:
@@ -216,6 +218,33 @@ paths:
                 $ref: '#/components/schemas/PlanningSolutionViewModel'
         '404':
           description: No planning solution has been created yet
+  /v1/explanation:
+    post:
+      tags:
+        - explain
+      summary: Ask a natural-language question about a planning solution
+      description: >-
+        Answers a natural-language question about a planning solution using a
+        GenAI model. The question, the solver constraints and the solution
+        (including its score and constraint matches) are combined into a prompt.
+        Pass the returned conversationId on follow-up questions to keep the
+        conversation context (multi-turn).
+      operationId: explainPlanningSolution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExplanationRequest'
+      responses:
+        '200':
+          description: The generated answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplanationViewModel'
+        '404':
+          description: No planning solution was found for the request
 components:
   parameters:
     PresetId:
@@ -450,3 +479,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TimeslotViewModel'
+    ExplanationRequest:
+      type: object
+      required:
+        - question
+      properties:
+        question:
+          type: string
+          description: The natural-language question about the planning solution
+        planningSolutionId:
+          type: integer
+          format: int64
+          description: >-
+            Id of the planning solution to explain. If omitted, the most recent
+            planning solution is used.
+        conversationId:
+          type: string
+          description: >-
+            Conversation id returned by a previous call. Pass it to continue the
+            same multi-turn conversation. If omitted, a new conversation is started.
+    ExplanationViewModel:
+      type: object
+      required:
+        - answer
+        - model
+        - planningSolutionId
+        - conversationId
+      properties:
+        answer:
+          type: string
+          description: The generated answer
+        model:
+          type: string
+          description: The GenAI model that produced the answer
+        planningSolutionId:
+          type: integer
+          format: int64
+          description: Id of the planning solution the answer refers to
+        conversationId:
+          type: string
+          description: Conversation id to pass on follow-up questions
