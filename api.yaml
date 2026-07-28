@@ -336,6 +336,10 @@ components:
           type: boolean
         flipchartRequired:
           type: boolean
+        favorites:
+          type: integer
+          format: int32
+          description: Expected number of attendees (used against room seats)
         created:
           type: string
           description: Creation timestamp (ISO-8601), read-only
