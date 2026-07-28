@@ -340,6 +340,18 @@ components:
           type: integer
           format: int32
           description: Expected number of attendees (used against room seats)
+        timePreset:
+          type: string
+          description: >-
+            Optional pinned start time (ISO-8601 local time, e.g. "09:00").
+            When set and a timeslot with this start time exists, the talk is
+            locked to it during planning; otherwise the preset is ignored.
+        roomPreset:
+          type: string
+          description: >-
+            Optional pinned room name. Only honored together with timePreset,
+            and only when a timeslot with the matching start time and room
+            exists; otherwise the preset is ignored.
         created:
           type: string
           description: Creation timestamp (ISO-8601), read-only
@@ -373,6 +385,18 @@ components:
         favorites:
           type: integer
           format: int32
+        timePreset:
+          type: string
+          description: >-
+            Optional pinned start time (ISO-8601 local time, e.g. "09:00").
+            When set and a timeslot with this start time exists, the talk is
+            locked to it during planning; otherwise the preset is ignored.
+        roomPreset:
+          type: string
+          description: >-
+            Optional pinned room name. Only honored together with timePreset,
+            and only when a timeslot with the matching start time and room
+            exists; otherwise the preset is ignored.
     ScoreViewModel:
       type: object
       required:
