@@ -475,6 +475,16 @@ components:
         favorites:
           type: integer
           format: int32
+        timePreset:
+          type: string
+          description: >-
+            The pinned start time this talk was planned with (ISO-8601 local
+            time, e.g. "09:00"), or absent if the talk was not pinned.
+        roomPreset:
+          type: string
+          description: >-
+            The pinned room name this talk was planned with, or absent if no
+            room was pinned.
         timeslot:
           $ref: '#/components/schemas/TimeslotViewModel'
         score:
