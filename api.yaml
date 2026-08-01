@@ -401,10 +401,14 @@ components:
       type: object
       required:
         - hardScore
+        - mediumScore
         - softScore
         - feasible
       properties:
         hardScore:
+          type: integer
+          format: int32
+        mediumScore:
           type: integer
           format: int32
         softScore:
@@ -417,11 +421,15 @@ components:
       required:
         - constraintName
         - hardScore
+        - mediumScore
         - softScore
       properties:
         constraintName:
           type: string
         hardScore:
+          type: integer
+          format: int32
+        mediumScore:
           type: integer
           format: int32
         softScore:
